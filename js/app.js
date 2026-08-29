@@ -341,8 +341,9 @@ class WorkGuideApp {
             ${this.renderCurrentView(guide)}
           </main>
 
-          <!-- Fixed Action Bar (For Step Guide Screen) -->
+          <!-- Fixed Action Bar (For Step Guide Screen & Detail Screen) -->
           ${this.currentView === 'step-guide' ? this.renderStepActionBar(guide) : ''}
+          ${this.currentView === 'detail' ? this.renderDetailActionBar(guide) : ''}
 
           <!-- Bottom Navigation (Only visible on main browsing screens) -->
           ${(this.currentView === 'home' || this.currentView === 'all-guides') ? this.renderBottomNav() : ''}
@@ -829,9 +830,12 @@ class WorkGuideApp {
           `).join('')}
         </div>
       </div>
+    `;
+  }
 
-      <!-- Start Guide Button (Large touch target with comfortable bottom clearance) -->
-      <div style="margin-top: 12px; padding-bottom: 32px;">
+  renderDetailActionBar(guide) {
+    return `
+      <div class="step-action-bar">
         <button class="btn-primary-full" id="start-guide-btn">
           <span>${this.t('startGuideBtn')}</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1059,7 +1063,7 @@ class WorkGuideApp {
         </div>
 
         <!-- Primary Action Button -->
-        <div style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; padding-bottom: 28px;">
           <button class="btn-primary-full" id="btn-back-home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>

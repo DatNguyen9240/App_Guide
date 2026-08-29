@@ -96,8 +96,12 @@ html, body {
   align-items: center;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: linear-gradient(135deg, #0B132B 0%, #1C2541 100%);
   position: relative;
+  overflow: hidden;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 /* Mobile Frame Wrapper (Targets 390px x 844px Mobile Viewport) */
@@ -105,14 +109,15 @@ html, body {
   position: relative;
   width: 100%;
   height: 100%;
-  max-width: 420px;
-  max-height: 890px;
+  max-width: 412px;
+  max-height: min(844px, calc(100vh - 24px));
   background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.5), 0 0 0 10px #1E293B, 0 0 0 12px #334155;
-  border-radius: 44px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 0 6px #1E293B;
+  border-radius: 36px;
   overflow: hidden;
+  box-sizing: border-box;
   transition: max-width var(--transition-normal), max-height var(--transition-normal), border-radius var(--transition-normal);
 }
 
@@ -127,7 +132,7 @@ html, body {
 /* Mobile hardware notch simulation (desktop only) */
 .device-notch {
   width: 120px;
-  height: 20px;
+  height: 18px;
   background-color: #1E293B;
   position: absolute;
   top: 0;
@@ -364,7 +369,8 @@ html, body {
 
 /* Main Viewport Content Area (Scrollable) */
 .view-content {
-  flex: 1;
+  flex: 1 1 0%;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 16px 16px max(32px, calc(16px + env(safe-area-inset-bottom, 16px))) 16px;
