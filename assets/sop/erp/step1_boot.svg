@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="screenBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="50%" stop-color="#0369A1"/>
+      <stop offset="100%" stop-color="#0C4A6E"/>
+    </linearGradient>
+    <linearGradient id="bezel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Industrial Tablet Frame -->
+  <rect x="40" y="35" width="520" height="330" rx="16" fill="url(#bezel)" stroke="#64748B" stroke-width="4"/>
+  
+  <!-- Top Red Slide Switch -->
+  <rect x="100" y="15" width="80" height="22" rx="4" fill="#1E293B" stroke="#475569" stroke-width="2"/>
+  <rect x="104" y="18" width="36" height="16" rx="3" fill="#DC2626" stroke="#EF4444" stroke-width="1.5"/>
+  <path d="M90 26 L75 26 M80 20 L75 26 L80 32" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="55" y="18" fill="#F87171" font-family="sans-serif" font-size="11" font-weight="bold">开机按键</text>
+  <text x="55" y="30" fill="#FCA5A5" font-family="sans-serif" font-size="9">(Gạt trái để Mở)</text>
+
+  <!-- Main Screen Display -->
+  <rect x="65" y="55" width="470" height="290" rx="8" fill="url(#screenBg)" stroke="#0F172A" stroke-width="3"/>
+
+  <!-- Android Industrial Home Screen -->
+  <!-- Status Bar -->
+  <rect x="65" y="55" width="470" height="24" fill="#0F172A" opacity="0.6"/>
+  <text x="80" y="71" fill="#E2E8F0" font-family="sans-serif" font-size="11" font-weight="bold">CHEN KAI INDUSTRIAL OS</text>
+  <text x="490" y="71" fill="#E2E8F0" font-family="sans-serif" font-size="11">08:30 | Wi-Fi OK</text>
+
+  <!-- App Icon: 应用程序 (Apps) -->
+  <g transform="translate(130, 115)">
+    <rect width="90" height="90" rx="18" fill="#22C55E" stroke="#FFFFFF" stroke-width="2" filter="url(#glow)"/>
+    <!-- 4 Colored Squares inside -->
+    <rect x="18" y="18" width="22" height="22" rx="4" fill="#FEF08A"/>
+    <rect x="50" y="18" width="22" height="22" rx="4" fill="#EF4444"/>
+    <rect x="18" y="50" width="22" height="22" rx="4" fill="#3B82F6"/>
+    <rect x="50" y="50" width="22" height="22" rx="4" fill="#FFFFFF"/>
+    <text x="45" y="112" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">应用程序</text>
+    <text x="45" y="127" fill="#E2E8F0" font-family="sans-serif" font-size="11" text-anchor="middle">(Ứng Dụng)</text>
+  </g>
+
+  <!-- App Icon: 设置 (Settings) -->
+  <g transform="translate(255, 115)">
+    <rect width="90" height="90" rx="18" fill="#A855F7" stroke="#E9D5FF" stroke-width="1.5"/>
+    <circle cx="45" cy="45" r="22" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-dasharray="8 4"/>
+    <circle cx="45" cy="45" r="10" fill="#FFFFFF"/>
+    <text x="45" y="112" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">设置</text>
+  </g>
+
+  <!-- App Icon: 浏览器 (Browser) -->
+  <g transform="translate(380, 115)">
+    <rect width="90" height="90" rx="18" fill="#3B82F6" stroke="#BFDBFE" stroke-width="1.5"/>
+    <text x="45" y="60" fill="#FFFFFF" font-family="serif" font-size="44" font-weight="bold" text-anchor="middle">e</text>
+    <text x="45" y="112" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">浏览器</text>
+  </g>
+
+  <!-- Step Highlight Overlay -->
+  <rect x="118" y="105" width="114" height="135" rx="12" fill="none" stroke="#EF4444" stroke-width="3.5" stroke-dasharray="6 3"/>
+  <circle cx="120" cy="105" r="14" fill="#DC2626" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="120" y="110" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">1</text>
+</svg>

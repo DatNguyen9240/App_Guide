@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="50%" stop-color="#CBD5E1"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="600" height="400" fill="#0F172A"/>
+  <!-- Work bench grid -->
+  <path d="M0 300 L600 300 M0 340 L600 340 M0 380 L600 380 M100 280 L100 400 M200 280 L200 400 M300 280 L300 400 M400 280 L400 400 M500 280 L500 400" stroke="#1E293B" stroke-width="1.5"/>
+  
+  <!-- Digital Caliper -->
+  <g filter="url(#shadow)">
+    <!-- Main Beam -->
+    <rect x="80" y="160" width="440" height="28" rx="3" fill="url(#metal)"/>
+    <!-- Metric markings -->
+    <path d="M120 160 v10 M140 160 v15 M160 160 v10 M180 160 v10 M200 160 v20 M220 160 v10 M240 160 v10 M260 160 v10 M280 160 v10 M300 160 v20 M320 160 v10 M340 160 v10 M360 160 v10 M380 160 v10 M400 160 v20" stroke="#475569" stroke-width="2"/>
+    <!-- Fixed Jaw -->
+    <path d="M80 160 L80 90 L100 110 L100 160 Z" fill="#64748B"/>
+    <path d="M80 188 L80 270 L110 240 L110 188 Z" fill="#64748B"/>
+    <!-- Sliding Jaw & Digital Unit -->
+    <rect x="230" y="130" width="130" height="90" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="2"/>
+    <!-- LCD Screen -->
+    <rect x="245" y="145" width="100" height="40" rx="4" fill="#0284C7"/>
+    <text x="295" y="172" fill="#FFFFFF" font-family="monospace" font-size="20" font-weight="bold" text-anchor="middle">12.54 mm</text>
+    <text x="335" y="158" fill="#BAE6FD" font-family="sans-serif" font-size="9">HOLD</text>
+    <!-- Buttons -->
+    <circle cx="260" cy="205" r="8" fill="#EF4444"/>
+    <text x="260" y="208" fill="#FFF" font-size="7" font-weight="bold" text-anchor="middle">ZERO</text>
+    <circle cx="295" cy="205" r="8" fill="#F59E0B"/>
+    <text x="295" y="208" fill="#FFF" font-size="7" font-weight="bold" text-anchor="middle">mm/in</text>
+    <circle cx="330" cy="205" r="8" fill="#10B981"/>
+    <text x="330" y="208" fill="#FFF" font-size="7" font-weight="bold" text-anchor="middle">ON/OFF</text>
+    <!-- Sliding Jaws -->
+    <path d="M230 130 L230 90 L210 110 L210 130 Z" fill="#94A3B8"/>
+    <path d="M230 220 L230 270 L200 240 L200 220 Z" fill="#94A3B8"/>
+    <!-- Measured Part -->
+    <rect x="115" y="210" width="80" height="45" rx="4" fill="#F43F5E" stroke="#FFE4E6" stroke-width="2"/>
+    <text x="155" y="238" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">SAMPLE A-1</text>
+  </g>
+  <!-- Measurement arrows -->
+  <line x1="115" y1="265" x2="195" y2="265" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4"/>
+  <text x="155" y="285" fill="#38BDF8" font-size="13" font-weight="bold" text-anchor="middle">↔ Spec: 12.50 ± 0.05 mm</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <rect width="600" height="400" fill="#0F172A"/>
+  <!-- Industrial Barcode Printer Body -->
+  <rect x="150" y="120" width="300" height="220" rx="12" fill="#334155" stroke="#64748B" stroke-width="3"/>
+  <!-- Printer Cover open angle -->
+  <path d="M150 120 L280 40 L450 120 Z" fill="#475569" stroke="#94A3B8" stroke-width="2"/>
+  <!-- Paper roll core inside -->
+  <circle cx="280" cy="190" r="45" fill="#38BDF8" stroke="#0284C7" stroke-width="4"/>
+  <circle cx="280" cy="190" r="16" fill="#0F172A"/>
+  <!-- Green release latch -->
+  <rect x="360" y="160" width="40" height="24" rx="4" fill="#10B981" stroke="#059669" stroke-width="2"/>
+  <text x="380" y="176" fill="#FFFFFF" font-size="10" font-weight="bold" text-anchor="middle">OPEN</text>
+  <text x="300" y="70" fill="#F8FAFC" font-size="18" font-weight="bold" text-anchor="middle">Mở nắp khoang nhãn / 打开打印机仓门</text>
+</svg>

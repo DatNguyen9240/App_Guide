@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <rect x="40" y="35" width="520" height="330" rx="16" fill="#1E293B" stroke="#64748B" stroke-width="4"/>
+  <rect x="65" y="55" width="470" height="290" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+
+  <!-- Top Form Fields -->
+  <g transform="translate(85, 70)">
+    <!-- QR 1: 工序 -->
+    <rect x="0" y="0" width="180" height="34" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="10" y="22" fill="#1E3A8A" font-family="sans-serif" font-size="12" font-weight="bold">① 扫工序: OP-04 [OK]</text>
+    
+    <!-- QR 2: 派工单号 -->
+    <rect x="200" y="0" width="230" height="34" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="210" y="22" fill="#1E3A8A" font-family="sans-serif" font-size="12" font-weight="bold">② 扫单号: WO-2025-088 [OK]</text>
+  </g>
+
+  <!-- Quantity Inputs (OK & NG) -->
+  <g transform="translate(85, 120)">
+    <!-- OK Quantity -->
+    <rect x="0" y="0" width="200" height="60" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+    <text x="15" y="24" fill="#065F46" font-family="sans-serif" font-size="12" font-weight="bold">③ 填写 OK 数量 (Số lượng OK):</text>
+    <text x="15" y="48" fill="#047857" font-family="sans-serif" font-size="20" font-weight="800">1,250 PCS</text>
+    <circle cx="-4" cy="0" r="11" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/>
+    <text x="-4" y="4" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">3</text>
+
+    <!-- NG Quantity -->
+    <rect x="230" y="0" width="200" height="60" rx="8" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="245" y="24" fill="#991B1B" font-family="sans-serif" font-size="12" font-weight="bold">④ NG 数量 (Số lượng lỗi):</text>
+    <text x="245" y="48" fill="#DC2626" font-family="sans-serif" font-size="20" font-weight="800">0 PCS</text>
+    <circle cx="226" cy="0" r="11" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/>
+    <text x="226" y="4" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">4</text>
+  </g>
+
+  <!-- Action Buttons -->
+  <g transform="translate(85, 200)">
+    <!-- Submit & Print Button -->
+    <rect x="0" y="0" width="240" height="50" rx="10" fill="#059669" stroke="#047857" stroke-width="2"/>
+    <text x="120" y="32" fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="800" text-anchor="middle">提交打印 (Gửi &amp; In)</text>
+    <rect x="-4" y="-4" width="248" height="58" rx="12" fill="none" stroke="#EF4444" stroke-width="3"/>
+    <circle cx="-4" cy="-4" r="12" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/>
+    <text x="-4" y="0" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">5</text>
+
+    <!-- Reprint Button -->
+    <rect x="270" y="0" width="160" height="50" rx="10" fill="#0284C7" stroke="#0369A1" stroke-width="2"/>
+    <text x="350" y="32" fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle">补打 (In Lại Tem)</text>
+    <circle cx="266" cy="-4" r="12" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/>
+    <text x="266" y="0" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">6</text>
+  </g>
+
+  <!-- Routing Card Spec Preview -->
+  <g transform="translate(85, 268)">
+    <rect width="430" height="60" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="12" y="24" fill="#0F172A" font-family="sans-serif" font-size="12" font-weight="bold">📄 打印标签: 振凯工序流转卡 (Thẻ Lưu Chuyển Công Đoạn)</text>
+    <text x="12" y="44" fill="#059669" font-family="sans-serif" font-size="11" font-weight="bold">✓ 状态: 报工成功，条码标签正在出纸...</text>
+  </g>
+</svg>
