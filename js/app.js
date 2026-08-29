@@ -830,8 +830,8 @@ class WorkGuideApp {
         </div>
       </div>
 
-      <!-- Sticky Start Button (Large touch target) -->
-      <div style="margin-top: 8px; padding-bottom: 12px;">
+      <!-- Start Guide Button (Large touch target with comfortable bottom clearance) -->
+      <div style="margin-top: 12px; padding-bottom: 32px;">
         <button class="btn-primary-full" id="start-guide-btn">
           <span>${this.t('startGuideBtn')}</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">

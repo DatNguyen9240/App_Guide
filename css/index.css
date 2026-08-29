@@ -367,7 +367,7 @@ html, body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px;
+  padding: 16px 16px max(32px, calc(16px + env(safe-area-inset-bottom, 16px))) 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -663,6 +663,7 @@ html, body {
   flex-direction: column;
   gap: 14px;
   flex-shrink: 0;
+  padding-bottom: 24px;
 }
 
 .guide-card {
@@ -1034,6 +1035,7 @@ html, body {
   flex-direction: column;
   gap: 14px;
   flex-shrink: 0;
+  padding-bottom: 24px;
 }
 
 /* Continuous Segmented Progress Bar */
@@ -1688,7 +1690,7 @@ html, body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 24px 12px;
+  padding: 24px 16px max(44px, calc(24px + env(safe-area-inset-bottom, 24px))) 16px;
   gap: 20px;
   margin: auto 0;
   flex-shrink: 0;
