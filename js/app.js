@@ -17,6 +17,7 @@ class WorkGuideApp {
     this.elapsedSeconds = 0;
     this.timerInterval = null;
     this.isDeviceFullWidth = false;
+    this.activeGalleryImgIndex = 0;
 
     // Fullscreen Zoom & Pan Modal State
     this.modalState = {
@@ -27,7 +28,9 @@ class WorkGuideApp {
       isDragging: false,
       startX: 0,
       startY: 0,
-      showAnnotations: true
+      showAnnotations: true,
+      galleryImages: [],
+      activeGalleryIndex: 0
     };
 
     // Audio synthesizer context (for industrial haptic sound simulation)
@@ -105,6 +108,71 @@ class WorkGuideApp {
     this.updateSpeakingUI();
   }
 
+  cleanTextForSpeech(text, lang = this.currentLang) {
+    if (!text || typeof text !== 'string') return '';
+
+    let s = text;
+
+    // 1. Remove <img> tags and general HTML formatting tags without reading alt text
+    s = s.replace(/<img[^>]*>/gi, ' ');
+    s = s.replace(/<[^>]*>/g, ' ');
+    s = s.replace(/&nbsp;/gi, ' ');
+    s = s.replace(/&amp;/gi, lang === 'vi' ? ' và ' : ' 与 ');
+
+    // 2. Remove all brackets and quotation marks that TTS engines pronounce aloud as "dấu ngoặc", "dấu nháy"
+    s = s.replace(/[\[\]【】{}《》]/g, ' ');
+    s = s.replace(/[“"”'‘'«»`]/g, ' ');
+
+    // 3. Parentheses: replace with comma pause so it doesn't say "mở ngoặc đơn", "đóng ngoặc đơn"
+    s = s.replace(/[\(\)（）]/g, ', ');
+
+    // 4. Colons and semicolons: replace with comma pause so voice breathes naturally without saying "hai chấm", "chấm phẩy"
+    s = s.replace(/[:：;；]/g, ', ');
+
+    // 5. Relational and math symbols: convert to natural words
+    if (lang === 'vi') {
+      s = s.replace(/\s*->\s*|\s*→\s*|\s*=>\s*/g, ' sau đó đến ');
+      s = s.replace(/\s*<\s*/g, ' nhỏ hơn ');
+      s = s.replace(/\s*>\s*/g, ' lớn hơn ');
+      s = s.replace(/\s*<=\s*|\s*≤\s*/g, ' nhỏ hơn hoặc bằng ');
+      s = s.replace(/\s*>=\s*|\s*≥\s*/g, ' lớn hơn hoặc bằng ');
+      s = s.replace(/\s*\/\s*/g, ' hoặc ');
+      s = s.replace(/±\s*/g, ' cộng trừ ');
+    } else {
+      s = s.replace(/\s*->\s*|\s*→\s*|\s*=>\s*/g, ' 然后 ');
+      s = s.replace(/\s*<\s*/g, ' 小于 ');
+      s = s.replace(/\s*>\s*/g, ' 大于 ');
+      s = s.replace(/\s*<=\s*|\s*≤\s*/g, ' 小于等于 ');
+      s = s.replace(/\s*>=\s*|\s*≥\s*/g, ' 大于等于 ');
+      s = s.replace(/\s*\/\s*/g, ' 或 ');
+      s = s.replace(/±\s*/g, ' 正负 ');
+    }
+
+    // 6. Circled numbers (① ② ③ ...): pronounce as standard numbers
+    const circledMap = {
+      '①': '1. ', '②': '2. ', '③': '3. ', '④': '4. ', '⑤': '5. ',
+      '⑥': '6. ', '⑦': '7. ', '⑧': '8. ', '⑨': '9. ', '⑩': '10. '
+    };
+    s = s.replace(/[①②③④⑤⑥⑦⑧⑨⑩]/g, m => circledMap[m] || ' ');
+
+    // 7. Remove decorative symbols, warning icons, bullets
+    s = s.replace(/[⚠✓✔✕✖•·●▪▲■◆★☆*#@~_^\\|]/g, ' ');
+
+    // 8. Exclamation marks: replace with period
+    s = s.replace(/[!！]+/g, '. ');
+    s = s.replace(/\s*[-–—]\s*/g, ', ');
+
+    // 9. Clean up multiple punctuation and whitespace
+    s = s.replace(/,\s*,+/g, ',');
+    s = s.replace(/\.\s*\.+/g, '.');
+    s = s.replace(/\s+([,.\?!])/g, '$1');
+    s = s.replace(/,\s*\./g, '.');
+    s = s.replace(/[\n\r\t]+/g, ' ');
+    s = s.replace(/\s{2,}/g, ' ');
+
+    return s.trim();
+  }
+
   speakText(text, elementId = null) {
     if (!('speechSynthesis' in window)) {
       alert(this.currentLang === 'vi' ? 'Trình duyệt của bạn không hỗ trợ tính năng phát âm thanh.' : '您的浏览器不支持语音播报功能。');
@@ -121,7 +189,10 @@ class WorkGuideApp {
 
     if (!text || !text.trim()) return;
 
-    const cleanText = text.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim();
+    // Sanitize text completely so TTS does NOT pronounce punctuation marks or symbols
+    const cleanText = this.cleanTextForSpeech(text, this.currentLang);
+    if (!cleanText) return;
+
     const utterance = new SpeechSynthesisUtterance(cleanText);
     const langCode = this.currentLang === 'vi' ? 'vi-VN' : 'zh-CN';
     utterance.lang = langCode;
@@ -196,6 +267,7 @@ class WorkGuideApp {
     }
     if (options.stepIndex !== undefined) {
       this.currentStepIndex = options.stepIndex;
+      this.activeGalleryImgIndex = 0;
     }
 
     if (view === 'step-guide') {
@@ -255,6 +327,7 @@ class WorkGuideApp {
     const guide = this.getActiveGuide();
     if (this.currentStepIndex < guide.steps.length - 1) {
       this.currentStepIndex++;
+      this.activeGalleryImgIndex = 0;
       this.playFeedbackTone('step');
       this.render();
       const viewEl = document.querySelector('.view-content');
@@ -267,6 +340,7 @@ class WorkGuideApp {
   handlePrevStep() {
     if (this.currentStepIndex > 0) {
       this.currentStepIndex--;
+      this.activeGalleryImgIndex = 0;
       this.render();
       const viewEl = document.querySelector('.view-content');
       if (viewEl) viewEl.scrollTop = 0;
@@ -283,7 +357,7 @@ class WorkGuideApp {
     this.render();
   }
 
-  openImageModal(imgSrc, annotations = []) {
+  openImageModal(imgSrc, annotations = [], galleryImages = [], activeGalleryIndex = 0) {
     this.modalState = {
       isOpen: true,
       scale: 1,
@@ -294,7 +368,9 @@ class WorkGuideApp {
       startY: 0,
       imgSrc,
       annotations,
-      showAnnotations: true
+      showAnnotations: true,
+      galleryImages: galleryImages || [],
+      activeGalleryIndex: activeGalleryIndex || 0
     };
     this.renderModal();
   }
@@ -769,6 +845,34 @@ class WorkGuideApp {
         </div>
       </div>
 
+      <!-- Official SOP Document Specification Metadata -->
+      ${guide.author ? `
+        <div class="sop-meta-card">
+          <div class="sop-meta-header">
+            <span class="sop-meta-title-badge">${this.t('sopStandardTitle')}</span>
+            <span class="sop-meta-version-badge">${guide.sopNumber}</span>
+          </div>
+          <div class="sop-meta-grid">
+            <div class="sop-meta-box">
+              <span class="sop-meta-label">${this.t('authorLabel')}</span>
+              <span class="sop-meta-val">${guide.author}</span>
+            </div>
+            <div class="sop-meta-box">
+              <span class="sop-meta-label">${this.t('tabletVersionLabel')}</span>
+              <span class="sop-meta-val">${guide.tabletVersion || '1.5.48'}</span>
+            </div>
+            <div class="sop-meta-box">
+              <span class="sop-meta-label">${this.t('issueDateLabel')}</span>
+              <span class="sop-meta-val">${guide.issueDate || '2026-4-20'}</span>
+            </div>
+            <div class="sop-meta-box">
+              <span class="sop-meta-label">${this.t('approvalDateLabel')}</span>
+              <span class="sop-meta-val">${guide.approvalDate || '2026-05-01'}</span>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
       <!-- Equipment & Tools Preparation -->
       <div class="info-section-card">
         <h4 class="info-section-title">
@@ -852,6 +956,14 @@ class WorkGuideApp {
     const totalSteps = guide.steps.length;
     const progressPercent = ((this.currentStepIndex + 1) / totalSteps) * 100;
 
+    const hasMultipleImages = step.images && step.images.length > 1;
+    if (this.activeGalleryImgIndex >= (step.images ? step.images.length : 0)) {
+      this.activeGalleryImgIndex = 0;
+    }
+    const currentImgObj = hasMultipleImages ? step.images[this.activeGalleryImgIndex] : { src: step.image, label: step.name };
+    const activeImgSrc = currentImgObj.src;
+    const activeImgLabel = currentImgObj.label ? currentImgObj.label[this.currentLang] : step.name[this.currentLang];
+
     return `
       <div class="step-guide-container">
         <!-- Segmented Continuous Progress Bar -->
@@ -877,55 +989,104 @@ class WorkGuideApp {
           <h2 class="step-main-title">${step.name[this.currentLang]}</h2>
         </div>
 
-        <!-- Instructional Visual Card with Annotations -->
-        <div class="step-visual-card" id="step-image-card">
-          <div class="step-visual-viewport">
-            <img src="${step.image}" class="step-image" alt="${step.name[this.currentLang]}" />
-            
-            <!-- Annotations Layer (Only if extra overlay annotations exist) -->
-            ${(step.annotations && step.annotations.length > 0) ? `
-              <div class="annotations-layer">
-                ${step.annotations.map(ann => {
-                  if (ann.type === 'box') {
-                    return `
-                      <div class="annotation-box" style="
-                        left: ${ann.x}%; 
-                        top: ${ann.y}%; 
-                        width: ${ann.width}%; 
-                        height: ${ann.height}%;
-                      "></div>
-                    `;
-                  } else if (ann.type === 'badge') {
-                    return `
-                      <div class="annotation-badge" style="left: ${ann.x}%; top: ${ann.y}%;">
-                        ${ann.number || 1}
-                      </div>
-                    `;
-                  } else if (ann.type === 'arrow') {
-                    return `
-                      <div class="annotation-arrow" style="left: ${ann.x}%; top: ${ann.y}%;">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2L4 12h5v8h6v-8h5L12 2z"/>
-                        </svg>
-                      </div>
-                    `;
-                  }
-                  return '';
-                }).join('')}
-              </div>
-            ` : ''}
+        <!-- Instructional Visual Card with Annotations & Gallery -->
+        <div class="step-gallery-wrapper">
+          ${hasMultipleImages ? `
+            <div class="gallery-tabs-scroll">
+              ${step.images.map((imgItem, idx) => `
+                <button class="gallery-tab-btn ${this.activeGalleryImgIndex === idx ? 'active' : ''}" data-gallery-index="${idx}">
+                  <span class="gallery-tab-badge">${idx + 1}</span>
+                  <img src="${imgItem.src}" class="gallery-tab-thumb" alt="thumb ${idx + 1}" />
+                  <span>${imgItem.label[this.currentLang]}</span>
+                </button>
+              `).join('')}
+            </div>
+          ` : ''}
 
-            <!-- Tap to Zoom Badge -->
-            <div class="zoom-hint-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                <line x1="11" y1="8" x2="11" y2="14"></line>
-                <line x1="8" y1="11" x2="14" y2="11"></line>
-              </svg>
-              <span>${this.t('tapToZoom')}</span>
+          <div class="step-visual-card" id="step-image-card" data-img-src="${activeImgSrc}">
+            <div class="step-visual-viewport">
+              <img src="${activeImgSrc}" class="step-image" alt="${activeImgLabel}" />
+              
+              ${hasMultipleImages ? `
+                <div class="gallery-counter-pill">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <span>${this.activeGalleryImgIndex + 1} / ${step.images.length}</span>
+                </div>
+
+                <div class="gallery-nav-arrows">
+                  <button class="gallery-arrow-btn" id="gallery-prev-arrow" title="${this.t('galleryPrevImage')}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  <button class="gallery-arrow-btn" id="gallery-next-arrow" title="${this.t('galleryNextImage')}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              ` : ''}
+
+              <!-- Annotations Layer (Only if extra overlay annotations exist) -->
+              ${(step.annotations && step.annotations.length > 0) ? `
+                <div class="annotations-layer">
+                  ${step.annotations.map(ann => {
+                    if (ann.type === 'box') {
+                      return `
+                        <div class="annotation-box" style="
+                          left: ${ann.x}%; 
+                          top: ${ann.y}%; 
+                          width: ${ann.width}%; 
+                          height: ${ann.height}%;
+                        "></div>
+                      `;
+                    } else if (ann.type === 'badge') {
+                      return `
+                        <div class="annotation-badge" style="left: ${ann.x}%; top: ${ann.y}%;">
+                          ${ann.number || 1}
+                        </div>
+                      `;
+                    } else if (ann.type === 'arrow') {
+                      return `
+                        <div class="annotation-arrow" style="left: ${ann.x}%; top: ${ann.y}%;">
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L4 12h5v8h6v-8h5L12 2z"/>
+                          </svg>
+                        </div>
+                      `;
+                    }
+                    return '';
+                  }).join('')}
+                </div>
+              ` : ''}
+
+              <!-- Tap to Zoom Badge -->
+              <div class="zoom-hint-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="11" y1="8" x2="11" y2="14"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+                <span>${this.t('tapToZoom')}</span>
+              </div>
             </div>
           </div>
+
+          ${hasMultipleImages ? `
+            <div class="gallery-active-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>${activeImgLabel}</span>
+            </div>
+          ` : ''}
         </div>
 
         <!-- Short Visual Numbered Instructions Checklist with Individual Speaker Buttons -->
@@ -1113,6 +1274,8 @@ class WorkGuideApp {
       return;
     }
 
+    const hasModalGallery = this.modalState.galleryImages && this.modalState.galleryImages.length > 1;
+
     modalRoot.innerHTML = `
       <div class="modal-overlay ${this.modalState.isOpen ? 'active' : ''}" id="modal-overlay">
         <header class="modal-header">
@@ -1121,7 +1284,7 @@ class WorkGuideApp {
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <span>${this.t('fullscreenTitle')}</span>
+            <span>${this.t('fullscreenTitle')}${hasModalGallery ? ` (${this.modalState.activeGalleryIndex + 1}/${this.modalState.galleryImages.length})` : ''}</span>
           </div>
           <button class="modal-close-btn" id="modal-close-btn" title="Close">✕</button>
         </header>
@@ -1159,6 +1322,15 @@ class WorkGuideApp {
         </div>
 
         <footer class="modal-controls-bar">
+          ${hasModalGallery ? `
+            <button class="modal-ctrl-btn" id="modal-prev-img" title="${this.t('galleryPrevImage')}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <span>${this.t('galleryPrevImage')}</span>
+            </button>
+          ` : ''}
+
           <button class="modal-ctrl-btn" id="modal-zoom-in">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -1190,6 +1362,15 @@ class WorkGuideApp {
             </svg>
             <span>${this.t('toggleAnnotations')}</span>
           </button>
+
+          ${hasModalGallery ? `
+            <button class="modal-ctrl-btn" id="modal-next-img" title="${this.t('galleryNextImage')}">
+              <span>${this.t('galleryNextImage')}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          ` : ''}
         </footer>
       </div>
     `;
@@ -1289,7 +1470,52 @@ class WorkGuideApp {
       imgCard.addEventListener('click', () => {
         const guide = this.getActiveGuide();
         const step = guide.steps[this.currentStepIndex];
-        this.openImageModal(step.image, step.annotations);
+        const activeSrc = imgCard.getAttribute('data-img-src') || step.image;
+        this.openImageModal(activeSrc, step.annotations, step.images, this.activeGalleryImgIndex);
+      });
+    }
+
+    // Gallery tab buttons click
+    document.querySelectorAll('.gallery-tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const idx = parseInt(e.currentTarget.getAttribute('data-gallery-index'), 10);
+        this.activeGalleryImgIndex = idx;
+        this.playFeedbackTone('step');
+        this.render();
+      });
+    });
+
+    // Gallery arrow prev
+    const prevArrow = document.getElementById('gallery-prev-arrow');
+    if (prevArrow) {
+      prevArrow.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const guide = this.getActiveGuide();
+        const step = guide.steps[this.currentStepIndex];
+        if (step.images && step.images.length > 1) {
+          let nextIdx = this.activeGalleryImgIndex - 1;
+          if (nextIdx < 0) nextIdx = step.images.length - 1;
+          this.activeGalleryImgIndex = nextIdx;
+          this.playFeedbackTone('step');
+          this.render();
+        }
+      });
+    }
+
+    // Gallery arrow next
+    const nextArrow = document.getElementById('gallery-next-arrow');
+    if (nextArrow) {
+      nextArrow.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const guide = this.getActiveGuide();
+        const step = guide.steps[this.currentStepIndex];
+        if (step.images && step.images.length > 1) {
+          let nextIdx = (this.activeGalleryImgIndex + 1) % step.images.length;
+          this.activeGalleryImgIndex = nextIdx;
+          this.playFeedbackTone('step');
+          this.render();
+        }
       });
     }
 
@@ -1377,6 +1603,43 @@ class WorkGuideApp {
     const closeBtn = document.getElementById('modal-close-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => this.closeImageModal());
+    }
+
+    const modalPrevBtn = document.getElementById('modal-prev-img');
+    if (modalPrevBtn) {
+      modalPrevBtn.addEventListener('click', () => {
+        const imgs = this.modalState.galleryImages;
+        if (imgs && imgs.length > 1) {
+          let nextIdx = this.modalState.activeGalleryIndex - 1;
+          if (nextIdx < 0) nextIdx = imgs.length - 1;
+          this.modalState.activeGalleryIndex = nextIdx;
+          this.modalState.imgSrc = imgs[nextIdx].src;
+          this.modalState.scale = 1;
+          this.modalState.posX = 0;
+          this.modalState.posY = 0;
+          this.activeGalleryImgIndex = nextIdx;
+          this.renderModal();
+          this.render();
+        }
+      });
+    }
+
+    const modalNextBtn = document.getElementById('modal-next-img');
+    if (modalNextBtn) {
+      modalNextBtn.addEventListener('click', () => {
+        const imgs = this.modalState.galleryImages;
+        if (imgs && imgs.length > 1) {
+          let nextIdx = (this.modalState.activeGalleryIndex + 1) % imgs.length;
+          this.modalState.activeGalleryIndex = nextIdx;
+          this.modalState.imgSrc = imgs[nextIdx].src;
+          this.modalState.scale = 1;
+          this.modalState.posX = 0;
+          this.modalState.posY = 0;
+          this.activeGalleryImgIndex = nextIdx;
+          this.renderModal();
+          this.render();
+        }
+      });
     }
 
     const zoomInBtn = document.getElementById('modal-zoom-in');

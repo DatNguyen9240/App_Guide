@@ -70,7 +70,16 @@ export const i18n = {
     listenItem: "Nghe câu này",
     listenPrereq: "Nghe yêu cầu an toàn",
     listenOverview: "Nghe giới thiệu SOP",
-    stopAudio: "Dừng đọc"
+    stopAudio: "Dừng đọc",
+    authorLabel: "Người lập",
+    issueDateLabel: "Ngày ban hành",
+    approvalDateLabel: "Ngày duyệt",
+    tabletVersionLabel: "Bản máy tính bảng",
+    sopStandardTitle: "Bản hướng dẫn thao tác tiêu chuẩn (SOP)",
+    galleryPrevImage: "Hình trước",
+    galleryNextImage: "Hình tiếp theo",
+    imageGalleryLabel: "Hình ảnh minh họa",
+    reprintLabelTitle: "Xử lý sự cố in tem"
   },
   zh: {
     appName: "WorkGuide",
@@ -142,6 +151,15 @@ export const i18n = {
     listenItem: "朗读此项",
     listenPrereq: "朗读安全须知",
     listenOverview: "朗读指南概述",
-    stopAudio: "停止播报"
+    stopAudio: "停止播报",
+    authorLabel: "编制",
+    issueDateLabel: "制定日期",
+    approvalDateLabel: "审批",
+    tabletVersionLabel: "平板版本",
+    sopStandardTitle: "标准作业指导书",
+    galleryPrevImage: "上一张图",
+    galleryNextImage: "下一张图",
+    imageGalleryLabel: "相关图示",
+    reprintLabelTitle: "打印异常处理"
   }
 };
