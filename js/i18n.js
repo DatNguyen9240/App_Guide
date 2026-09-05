@@ -79,7 +79,23 @@ export const i18n = {
     galleryPrevImage: "Hình trước",
     galleryNextImage: "Hình tiếp theo",
     imageGalleryLabel: "Hình ảnh thực tế đính kèm",
-    reprintLabelTitle: "Xử lý sự cố in tem"
+    reprintLabelTitle: "Xử lý sự cố in tem",
+    viewOfficialSopDoc: "Xem Toàn Văn Bảng SOP Chuẩn",
+    viewStepGuide: "Chế Độ Hướng Dẫn Từng Bước",
+    officialDocTitle: "Văn Bản SOP Tiêu Chuẩn (Theo chuẩn Docx)",
+    printSopBtn: "In / Xuất PDF SOP",
+    docxPage1Title: "Trang 1: Mở máy, Đăng nhập ERP, Vào MES Báo công (Trang 1/2)",
+    docxPage2Title: "Trang 2: Tiếp nhận hàng, Nộp hoàn công, Thay giấy & Phím chức năng (Trang 2/2)",
+    colStep: "Bước",
+    colActionName: "Tên thao tác",
+    colActionDesc: "Hướng dẫn thao tác",
+    colIllustrations: "Hình ảnh thực tế",
+    prepSectionTitle: "Chuẩn bị tác nghiệp",
+    prepEquipment: "Thiết bị (Máy tính bảng)",
+    prepTools: "Công cụ (Máy quét mã vạch)",
+    prepOthers: "Khác (Giấy in nhãn nhiệt)",
+    docNumberLabel: "Mã tài liệu (文件编号)",
+    appSubjectLabel: "Đối tượng (适用对象)"
   },
   zh: {
     appName: "WorkGuide",
@@ -158,6 +174,22 @@ export const i18n = {
     galleryPrevImage: "上一张图",
     galleryNextImage: "下一张图",
     imageGalleryLabel: "相关真实图示",
-    reprintLabelTitle: "打印异常处理"
+    reprintLabelTitle: "打印异常处理",
+    viewOfficialSopDoc: "查看标准 SOP 原版表格",
+    viewStepGuide: "分步操作指引模式",
+    officialDocTitle: "标准作业指导书 (原版 Docx 视图)",
+    printSopBtn: "打印 / 导出 SOP",
+    docxPage1Title: "第 1 页：开机、ERP登录与MES报工 (共 2 页)",
+    docxPage2Title: "第 2 页：货物接收、扫码过站、打印纸与按键 (共 2 页)",
+    colStep: "步骤",
+    colActionName: "作业名称",
+    colActionDesc: "作业说明",
+    colIllustrations: "相关图示",
+    prepSectionTitle: "作业准备",
+    prepEquipment: "设备（平板）",
+    prepTools: "工 具（扫码器）",
+    prepOthers: "其 他（标签纸）",
+    docNumberLabel: "文件编号",
+    appSubjectLabel: "适用对象"
   }
 };

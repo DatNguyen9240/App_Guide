@@ -438,6 +438,7 @@ class WorkGuideApp {
     const isStep = this.currentView === 'step-guide';
     const isDetail = this.currentView === 'detail';
     const isCompletion = this.currentView === 'completion';
+    const isSopDoc = this.currentView === 'sop-doc';
 
     let leftSection = '';
     let centerSection = '';
@@ -466,6 +467,19 @@ class WorkGuideApp {
       centerSection = `
         <span style="font-weight: 700; font-size: 14px; color: var(--color-primary);">
           ${guide.sopNumber}
+        </span>
+      `;
+    } else if (isSopDoc) {
+      leftSection = `
+        <button class="header-btn" id="header-back-btn" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+      `;
+      centerSection = `
+        <span style="font-weight: 700; font-size: 13px; color: var(--color-primary);">
+          ${this.t('officialDocTitle')}
         </span>
       `;
     } else {
@@ -518,6 +532,8 @@ class WorkGuideApp {
         return this.renderDetailView(guide);
       case 'step-guide':
         return this.renderStepGuideView(guide);
+      case 'sop-doc':
+        return this.renderSopDocView(guide);
       case 'completion':
         return this.renderCompletionView(guide);
       default:
@@ -905,6 +921,23 @@ class WorkGuideApp {
         </button>
       </div>
 
+      <!-- Official SOP Document View Banner -->
+      <div class="detail-sop-doc-banner" id="view-sop-doc-banner">
+        <div class="detail-sop-doc-banner-info">
+          <span class="detail-sop-doc-banner-title">${this.t('viewOfficialSopDoc')}</span>
+          <span class="detail-sop-doc-banner-sub">${this.currentLang === 'vi' ? 'Xem toàn văn biểu mẫu SOP 2 trang chuẩn Chen Kai có đầy đủ bảng biểu & hình ảnh gốc' : '查看符合振凯规范的标准双页SOP原版表格文档（含全部图示与说明）'}</span>
+        </div>
+        <div class="detail-sop-doc-banner-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
       <!-- Step Overview Timeline -->
       <div class="info-section-card">
         <h4 class="info-section-title">
@@ -916,7 +949,7 @@ class WorkGuideApp {
             <line x1="3" y1="12" x2="3.01" y2="12"></line>
             <line x1="3" y1="18" x2="3.01" y2="18"></line>
           </svg>
-          <span>${this.t('stepOverview')}</span>
+          <span>${this.t('stepOverview')} (${guide.steps.length} ${this.currentLang === 'vi' ? 'thao tác chi tiết' : '详细操作'})</span>
         </h4>
         <div class="step-timeline">
           ${guide.steps.map((s, idx) => `
@@ -935,13 +968,20 @@ class WorkGuideApp {
 
   renderDetailActionBar(guide) {
     return `
-      <div class="step-action-bar">
-        <button class="btn-primary-full" id="start-guide-btn">
+      <div class="step-action-bar" style="display: flex; gap: 10px;">
+        <button class="btn-primary-full" id="start-guide-btn" style="flex: 1.3;">
           <span>${this.t('startGuideBtn')}</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
+        </button>
+        <button class="btn-secondary-full" id="view-sop-doc-btn" style="flex: 0.9; background: var(--color-surface); border: 1.5px solid var(--color-primary); color: var(--color-primary); font-weight: 700; border-radius: var(--radius-xl); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; font-size: 13px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <span>${this.currentLang === 'vi' ? 'Xem Bản SOP' : '查看原版'}</span>
         </button>
       </div>
     `;
@@ -971,16 +1011,25 @@ class WorkGuideApp {
         <div class="step-header-box">
           <div class="step-header-top">
             <span class="step-label-tag">
-              ${this.t('stepOf', { current: step.stepNumber, total: totalSteps })}
+              ${this.t('stepOf', { current: step.stepNumber, total: totalSteps })}${step.docxStepRef ? ` · Docx 步骤 ${step.docxStepRef}` : ''}
             </span>
-            <button class="btn-speaker-header btn-speaker" data-speak-id="step-full" id="btn-speak-step-full" title="${this.t('listenStep')}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-              </svg>
-              <span class="speaker-label">${this.t('listenAudio')}</span>
-              <span class="sound-wave-anim"><i></i><i></i><i></i></span>
-            </button>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button class="header-doc-link-btn" id="step-open-doc-btn" title="${this.t('viewOfficialSopDoc')}" style="padding: 4px 10px; height: 32px; font-size: 11px; font-weight: 700; border-radius: var(--radius-full); background: var(--color-bg-page); border: 1px solid var(--color-border); color: var(--color-primary); cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span>${this.currentLang === 'vi' ? 'Bản Docx' : '原版'}</span>
+              </button>
+              <button class="btn-speaker-header btn-speaker" data-speak-id="step-full" id="btn-speak-step-full" title="${this.t('listenStep')}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+                <span class="speaker-label">${this.t('listenAudio')}</span>
+                <span class="sound-wave-anim"><i></i><i></i><i></i></span>
+              </button>
+            </div>
           </div>
           <h2 class="step-main-title">${step.name[this.currentLang]}</h2>
         </div>
@@ -1237,6 +1286,357 @@ class WorkGuideApp {
     `;
   }
 
+  renderSopDocView(guide) {
+    const isVi = this.currentLang === 'vi';
+    return `
+      <div class="sop-doc-container">
+        <!-- Floating Document Toolbar -->
+        <div class="sop-doc-toolbar">
+          <button class="sop-toolbar-btn primary" id="sop-doc-to-step-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span>${this.t('viewStepGuide')}</span>
+          </button>
+          <button class="sop-toolbar-btn" id="sop-doc-print-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span>${this.t('printSopBtn')}</span>
+          </button>
+        </div>
+
+        <!-- SOP Document Sheet (Standard 2-Page Format of Chen Kai SOP) -->
+        <div class="sop-sheet">
+          <!-- ================= PAGE 1 ================= -->
+          <div class="sop-page-block">
+            <!-- Header Table -->
+            <table class="sop-table-bordered">
+              <tr>
+                <td rowspan="2" class="sop-table-header-company" style="width: 44%;">
+                  <div class="vi">CÔNG TY TNHH CÔNG NGHIỆP CHÍNH XÁC CHEN KAI</div>
+                  <div class="zh">振凱精密工業责任有限公司</div>
+                </td>
+                <td class="sop-cell-lbl">文件编号</td>
+                <td class="sop-cell-val">${guide.sopNumber}</td>
+                <td class="sop-cell-lbl">制定日期</td>
+                <td class="sop-cell-val">${guide.issueDate}</td>
+              </tr>
+              <tr>
+                <td class="sop-cell-lbl">适用对象</td>
+                <td class="sop-cell-val">ERP工业平板</td>
+                <td class="sop-cell-lbl">编 制</td>
+                <td class="sop-cell-val">${guide.author}</td>
+              </tr>
+              <tr>
+                <td class="sop-title-banner">
+                  标 准 作 业 指 导 书
+                  <div class="sub-vi">Bản Hướng Dẫn Thao Tác Tiêu Chuẩn (SOP)</div>
+                </td>
+                <td class="sop-cell-lbl">平板版本</td>
+                <td class="sop-cell-val">${guide.tabletVersion}</td>
+                <td class="sop-cell-lbl">审 批</td>
+                <td class="sop-cell-val">${guide.approvalDate}</td>
+              </tr>
+            </table>
+
+            <!-- Section: 作业准备 -->
+            <table class="sop-table-bordered" style="margin-top: -1px;">
+              <tr>
+                <th rowspan="2" class="sop-prep-title">
+                  作<br/>业<br/>准<br/>备
+                </th>
+                <th class="sop-prep-th">设备（平板）</th>
+                <th class="sop-prep-th">工  具（扫码器）</th>
+                <th class="sop-prep-th">其  他（标签纸）</th>
+              </tr>
+              <tr>
+                <td class="sop-prep-td">
+                  <img src="./assets/sop/erp/eq_tablet.png" class="sop-prep-img sop-doc-img" data-img-src="./assets/sop/erp/eq_tablet.png" alt="设备（平板）" />
+                </td>
+                <td class="sop-prep-td">
+                  <img src="./assets/sop/erp/tool_scanner.png" class="sop-prep-img sop-doc-img" data-img-src="./assets/sop/erp/tool_scanner.png" alt="工 具（扫码器）" />
+                </td>
+                <td class="sop-prep-td">
+                  <img src="./assets/sop/erp/tool_labels.png" class="sop-prep-img sop-doc-img" data-img-src="./assets/sop/erp/tool_labels.png" alt="其 他（标签纸）" />
+                </td>
+              </tr>
+            </table>
+
+            <!-- Flow Banner Page 1 -->
+            <div class="sop-flow-banner">--- 作  业  标  准  流  程 ---</div>
+
+            <!-- Flow Table Page 1 (Steps 1 to 5) -->
+            <table class="sop-table-bordered sop-flow-tbl" style="margin-top: -1px;">
+              <thead>
+                <tr>
+                  <th style="width: 8%;">步骤</th>
+                  <th style="width: 20%;">作 业 名 称</th>
+                  <th style="width: 44%;">作 业 说 明</th>
+                  <th style="width: 28%;">相 关 图 示</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 步骤 1 -->
+                <tr>
+                  <td class="sop-step-num">1</td>
+                  <td class="sop-action-name">
+                    开机界面
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal;">Giao diện mở máy</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p>连接电源、网路、扫码器、放置打印纸完成后，在平板顶部，左边“红色键”为“开机按键”，直接开机，进入平板主界面. 
+                      <span class="sop-inline-img-link sop-doc-img" data-img-src="./assets/sop/erp/step1_thumb_switch.png"><img src="./assets/sop/erp/step1_thumb_switch.png" alt="红色键" /></span>
+                    </p>
+                    <p>点击“应用程序”，进入ERP安装程序界面.</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Kết nối nguồn, mạng, máy quét, giấy in, mở nút đỏ ở đỉnh bên trái để bật máy tính bảng. Nhấp [Ứng dụng] để vào cài đặt ERP.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step1_boot.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step1_boot.png" alt="步骤1图示" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 2 -->
+                <tr>
+                  <td class="sop-step-num">2</td>
+                  <td class="sop-action-name">
+                    ERP登录
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal;">Đăng nhập ERP</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p>直接在平板上触屏点击“企助物联”APP ，进入ERP界面.
+                      <span class="sop-inline-img-link sop-doc-img" data-img-src="./assets/sop/erp/step2_thumb_app.png"><img src="./assets/sop/erp/step2_thumb_app.png" alt="企助物联" /></span>
+                    </p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Trực tiếp chạm vào ứng dụng “企助物联” trên màn hình để vào ERP.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step2_erp_login.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step2_erp_login.png" alt="步骤2图示" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 3 -->
+                <tr>
+                  <td class="sop-step-num">3</td>
+                  <td class="sop-action-name">
+                    ERP登录
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal;">Đăng nhập ERP (Tài khoản)</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p>手指触屏，录入使用人的账户、密码，点击平板最下方的“蓝色登录键”，进入ERP操作界面.</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Dùng tay nhập tài khoản, mật khẩu, tích nhớ mật khẩu và nhấp nút màu xanh lam ở mép dưới để đăng nhập.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step3_login_fields.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step3_login_fields.png" alt="步骤3图示" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 4 -->
+                <tr>
+                  <td class="sop-step-num">4</td>
+                  <td class="sop-action-name">
+                    ERP报工操作
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal;">Vào MES Trung tâm</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p>手指触屏点击“企助MES中心”
+                      <span class="sop-inline-img-link sop-doc-img" data-img-src="./assets/sop/erp/step4_thumb_mes.png"><img src="./assets/sop/erp/step4_thumb_mes.png" alt="MES中心" /></span>
+                    </p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Chạm màn hình nhấp vào ô màu hồng [企助 MES 中心].</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step4_mes_center.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step4_mes_center.png" alt="步骤4图示" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 5 -->
+                <tr>
+                  <td class="sop-step-num">5</td>
+                  <td class="sop-action-name">
+                    ERP报工操作
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal;">Vào Quét mã báo công</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p>手指触屏点击“扫码报工”
+                      <span class="sop-inline-img-link sop-doc-img" data-img-src="./assets/sop/erp/step5_thumb_scan.png"><img src="./assets/sop/erp/step5_thumb_scan.png" alt="扫码报工" /></span>
+                    </p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Chạm màn hình nhấp vào biểu tượng súng quét [扫码报工].</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step5_scan_report.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step5_scan_report.png" alt="步骤5图示" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="sop-page-footer">第 1 页  共 2 页</div>
+          </div>
+
+          <!-- ================= PAGE 2 ================= -->
+          <div class="sop-page-block" style="margin-top: 24px; border-top: 2px dashed #94A3B8; padding-top: 20px;">
+            <div class="sop-flow-banner">--- 作  业  标  准  流  程 ---</div>
+
+            <table class="sop-table-bordered sop-flow-tbl" style="margin-top: -1px;">
+              <thead>
+                <tr>
+                  <th style="width: 8%;">步骤</th>
+                  <th style="width: 20%;">作 业 名 称</th>
+                  <th style="width: 44%;">作 业 说 明</th>
+                  <th style="width: 28%;">相 关 图 示</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 步骤 6 Row 1 (Tab 接收) -->
+                <tr>
+                  <td rowspan="3" class="sop-step-num">6</td>
+                  <td rowspan="3" class="sop-action-name">
+                    ERP货物接收<br/>（材料/开工接收）
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal; margin-top: 4px;">Tiếp nhận hàng hóa (Nguyên vật liệu / Khởi động tiếp nhận)</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p><strong>进入ERP扫码界面：</strong><br/>在收到货物后必须先做接收，点击“接收”</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Vào giao diện quét mã ERP: Sau khi nhận hàng bắt buộc phải làm tiếp nhận trước, nhấp chọn tab “Tiếp nhận” (接收).</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step6_thumb_receive.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step6_thumb_receive.png" alt="接收标签" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 6 Row 2 (扫码操作 & 履历卡) -->
+                <tr>
+                  <td class="sop-action-desc">
+                    <p>在ERP扫码界面，光标会自动停在“当前工序”栏位上，开始使用“扫码器”扫生产履历卡二维码，操作方式：</p>
+                    <p>• 扫“工序”二维码；</p>
+                    <p>• 扫“派工单号”二维码；</p>
+                    <p><strong>接收生产履历卡“实物数量”注意事项：</strong><br/>核对填写”接收数”,生产履历卡实物数与接收数一致时，直接点“接收”完成.</p>
+                    <div class="sop-warning-inline">不允许手动修改：接收数 < 实物数</div>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Dùng súng quét mã Thẻ lưu chuyển sản xuất: 1.Quét mã 工序, 2.Quét mã 派工单号. Đối chiếu số lượng thực tế và số lượng tiếp nhận. Lưu ý cấm sửa: Tiếp nhận &lt; Thực tế.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/tool_scanner.png" class="sop-doc-img" data-img-src="./assets/sop/erp/tool_scanner.png" alt="扫码器" style="max-height: 50px;" />
+                    <img src="./assets/sop/erp/routing_card_qr_guide.png" class="sop-doc-img" data-img-src="./assets/sop/erp/routing_card_qr_guide.png" alt="生产履历卡" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 6 Row 3 (开工接收界面) -->
+                <tr>
+                  <td class="sop-action-desc">
+                    <p><strong>开工接收操作界面核对：</strong><br/>系统自动带入品名、规格、图号。核对实物数量与接收数无误后，点击“接收”按键完成。</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Màn hình 開工接收: Kiểm tra thông tin tự động hiển thị, điền số nhận và bấm nút [Tiếp nhận] để hoàn thành.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step6_receive_form.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step6_receive_form.png" alt="开工接收界面" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 7 Row 1 (Tab 提交) -->
+                <tr>
+                  <td rowspan="4" class="sop-step-num">7</td>
+                  <td rowspan="4" class="sop-action-name">
+                    扫码过站<br/>（完工提交）
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal; margin-top: 4px;">Quét mã qua trạm (Nộp hoàn công)</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p><strong>进入ERP扫码界面：</strong><br/>制造部门完工品扫码报工，点击“提交”</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Vào giao diện quét mã ERP: Bộ phận sản xuất hoàn thành sản phẩm nhấp vào tab màu xanh lá “Nộp” (提交).</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step7_thumb_submit.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step7_thumb_submit.png" alt="提交标签" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 7 Row 2 (扫码、填OK/NG、提交打印 & 打印异常说明) -->
+                <tr>
+                  <td class="sop-action-desc">
+                    <p>在ERP扫码界面，光标会自动停在“当前工序”栏位上，开始使用“扫码器”扫生产履历卡二维码，操作方式：</p>
+                    <p>• 扫“工序”二维码；</p>
+                    <p>• 扫“派工单号”二维码；</p>
+                    <p>• 填写报工数“OK”数量；</p>
+                    <p>• 填写不良数“NG品”数量（如有）；</p>
+                    <p>• 点击“提交打印”，完成.
+                      <span class="sop-inline-img-link sop-doc-img" data-img-src="./assets/sop/erp/step7_printed_tag.png"><img src="./assets/sop/erp/step7_printed_tag.png" alt="工艺流转卡" /></span>
+                    </p>
+                    <div class="sop-warning-inline" style="color: #B45309; background: #FFFBEB; border-color: #F59E0B;">
+                      <strong>打印异常：</strong>工序流转卡标签未正常打印，不要退出打印界面，可直接在当前界面重新点击“打印”
+                      <span class="sop-inline-img-link sop-doc-img" data-img-src="./assets/sop/erp/step7_thumb_reprint_btn.png"><img src="./assets/sop/erp/step7_thumb_reprint_btn.png" alt="打印按键" /></span>
+                      即可打印此张报工标签.
+                    </div>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Quét mã 工序 & 派工单号, điền OK, điền NG (nếu có), bấm “提交并打印”. Khi tem chưa ra: KHÔNG ĐƯỢC THOÁT, bấm ngay nút “In” trên màn hình để in lại.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/tool_scanner.png" class="sop-doc-img" data-img-src="./assets/sop/erp/tool_scanner.png" alt="扫码器" style="max-height: 50px;" />
+                    <img src="./assets/sop/erp/routing_card_qr_guide.png" class="sop-doc-img" data-img-src="./assets/sop/erp/routing_card_qr_guide.png" alt="生产履历卡" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 7 Row 3 (完工提交界面) -->
+                <tr>
+                  <td class="sop-action-desc">
+                    <p><strong>完工提交详细界面图示：</strong><br/>1.当前工序 2.工单 3.填OK报工数 4.填NG不良数 5.点击“提交并打印”。</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Màn hình 完工提交: Quét công đoạn, quét phiếu, điền số OK, điền số NG và bấm [提交并打印].</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step7_station_form.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step7_station_form.png" alt="完工提交界面" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 7 Row 4 (打印异常界面) -->
+                <tr>
+                  <td class="sop-action-desc">
+                    <p><strong>重新打印标签纸界面图示：</strong><br/>弹出打印异常窗口时，请勿点击右上角 ✕ 退出，直接重新点击蓝色“打印”按键即可正常出纸。</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Giao diện in lại tem: Không bấm ✕ thoát ra, bấm nút [打印] màu xanh lam để in lại tem.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step7_reprint_dialog.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step7_reprint_dialog.png" alt="打印异常界面" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 8 (打印纸) -->
+                <tr>
+                  <td class="sop-step-num">8</td>
+                  <td class="sop-action-name">
+                    打印纸<br/>（放置或更换）
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal; margin-top: 4px;">Giấy in nhiệt (Đặt vào hoặc thay thế)</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p><strong>打印机：</strong>在平板下方“打印纸”放置区，打开盖子.</p>
+                    <p><strong>打印纸：</strong>将打印纸“正面”放置到纸槽OK后关闭即可.</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Máy in: Tại khoang đặt giấy in ở phía dưới máy tính bảng, mở nắp. Giấy in: Đặt cuộn giấy đúng mặt chính vào rãnh OK rồi đóng nắp lại.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step8_printer_door_closed.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step8_printer_door_closed.png" alt="打开打印纸盖子" />
+                    <img src="./assets/sop/erp/step8_printer_roll_feed.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step8_printer_roll_feed.png" alt="放置打印纸" />
+                  </td>
+                </tr>
+
+                <!-- 步骤 9 (其他操作) -->
+                <tr>
+                  <td class="sop-step-num">9</td>
+                  <td class="sop-action-name">
+                    其他操作
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; font-weight: normal; margin-top: 4px;">Các thao tác khác (Phím điều hướng)</div>' : ''}
+                  </td>
+                  <td class="sop-action-desc">
+                    <p>在屏幕最下方的按键功能说明：</p>
+                    <p>1. [返回上一页] （◀ 箭头）：返回上级界面</p>
+                    <p>2. [切换界面] （■ 方块）：多任务窗口切换</p>
+                    <p>3. [重启] （⏻ 电源键）：重新启动平板</p>
+                    <p>4. [关机] （⏻ 电源键）：关闭平板设备</p>
+                    ${isVi ? '<div style="font-size: 11px; color: #475569; margin-top: 4px; border-top: 1px dotted #CBD5E1; padding-top: 4px;">Chức năng phím đáy màn hình: ◀ Quay lại trang trước, ■ Chuyển đổi giao diện đa nhiệm, ⏻ Khởi động lại / Tắt máy tính bảng.</div>' : ''}
+                  </td>
+                  <td class="sop-cell-img-box">
+                    <img src="./assets/sop/erp/step9_bottom_keys.png" class="sop-doc-img" data-img-src="./assets/sop/erp/step9_bottom_keys.png" alt="底部按键" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="sop-page-footer">第 2 页  共 2 页</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   renderBottomNav() {
     return `
       <nav class="bottom-nav">
@@ -1398,11 +1798,45 @@ class WorkGuideApp {
       backBtn.addEventListener('click', () => {
         if (this.currentView === 'step-guide') {
           this.navigateTo('detail', { guideId: this.activeGuideId });
+        } else if (this.currentView === 'sop-doc') {
+          this.navigateTo('detail', { guideId: this.activeGuideId });
         } else if (this.currentView === 'detail') {
           this.navigateTo('home');
         }
       });
     }
+
+    // SOP Document View Buttons
+    document.querySelectorAll('#view-sop-doc-btn, #view-sop-doc-banner, #step-open-doc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.navigateTo('sop-doc', { guideId: this.activeGuideId });
+      });
+    });
+
+    const sopDocToStepBtn = document.getElementById('sop-doc-to-step-btn');
+    if (sopDocToStepBtn) {
+      sopDocToStepBtn.addEventListener('click', () => {
+        this.navigateTo('step-guide', { guideId: this.activeGuideId, stepIndex: 0 });
+      });
+    }
+
+    const sopDocPrintBtn = document.getElementById('sop-doc-print-btn');
+    if (sopDocPrintBtn) {
+      sopDocPrintBtn.addEventListener('click', () => {
+        window.print();
+      });
+    }
+
+    // Click on any image in SOP document to zoom
+    document.querySelectorAll('.sop-doc-img, .sop-inline-img-link').forEach(imgEl => {
+      imgEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const src = imgEl.getAttribute('data-img-src') || (imgEl.tagName === 'IMG' ? imgEl.getAttribute('src') : imgEl.querySelector('img')?.getAttribute('src'));
+        if (src) {
+          this.openImageModal(src);
+        }
+      });
+    });
 
     // Search input
     const searchInput = document.getElementById('home-search-input');
