@@ -2504,9 +2504,25 @@ html, body {
 
 /* Print CSS */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
   body {
     background: #FFFFFF !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
+
   .desktop-controls,
   .app-header,
   .sop-doc-toolbar,
@@ -2514,26 +2530,47 @@ html, body {
   .app-bottom-nav {
     display: none !important;
   }
+
   .device-wrapper {
     box-shadow: none !important;
     border: none !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
+
   .app-container {
     height: auto !important;
     overflow: visible !important;
+    background: transparent !important;
   }
+
   .view-content {
     overflow: visible !important;
     padding: 0 !important;
   }
+
   .sop-sheet {
-    border: 1px solid #000 !important;
+    border: 1.5px solid #000 !important;
     box-shadow: none !important;
+    margin: 0 0 15mm 0 !important;
+    padding: 0 !important;
   }
+
   .sop-page-block {
-    page-break-after: always;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .sop-doc-img,
+  .sop-cell-img-box img,
+  .sop-inline-img-link img,
+  .sop-tool-cell img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    filter: none !important;
   }
 }
+
