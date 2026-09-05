@@ -380,6 +380,58 @@ class WorkGuideApp {
     this.renderModal();
   }
 
+  exportColorPdf() {
+    const sheetEl = document.querySelector('.sop-sheet');
+    if (!sheetEl) return;
+
+    const btn = document.getElementById('sop-doc-export-pdf-btn');
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-anim" style="animation: spin 1s linear infinite;">
+          <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"></circle>
+        </svg>
+        <span>${this.currentLang === 'vi' ? 'Đang tạo PDF màu...' : '正在生成彩色PDF...'}</span>
+      `;
+    }
+
+    if (window.html2pdf) {
+      const opt = {
+        margin: [6, 8, 6, 8],
+        filename: 'SOP-20260421-ChenKai-ERP-Tablet.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true,
+          logging: false,
+          scrollY: 0
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'] }
+      };
+
+      window.html2pdf().set(opt).from(sheetEl).save().then(() => {
+        if (btn) {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.innerHTML = originalText;
+        }
+      }).catch(err => {
+        console.error('PDF export error:', err);
+        if (btn) {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.innerHTML = originalText;
+        }
+        window.print();
+      });
+    } else {
+      window.print();
+    }
+  }
+
   // ==========================================================================
   // Render Pipeline
   // ==========================================================================
@@ -1298,6 +1350,14 @@ class WorkGuideApp {
             </svg>
             <span>${this.t('viewStepGuide')}</span>
           </button>
+          <button class="sop-toolbar-btn" id="sop-doc-export-pdf-btn" style="background: #059669; border-color: #059669; color: #FFFFFF; font-weight: 800;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>${isVi ? 'Tải PDF Màu (Trực tiếp)' : '下载彩色 PDF'}</span>
+          </button>
           <button class="sop-toolbar-btn" id="sop-doc-print-btn">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -1817,6 +1877,13 @@ class WorkGuideApp {
     if (sopDocToStepBtn) {
       sopDocToStepBtn.addEventListener('click', () => {
         this.navigateTo('step-guide', { guideId: this.activeGuideId, stepIndex: 0 });
+      });
+    }
+
+    const sopDocExportBtn = document.getElementById('sop-doc-export-pdf-btn');
+    if (sopDocExportBtn) {
+      sopDocExportBtn.addEventListener('click', () => {
+        this.exportColorPdf();
       });
     }
 
