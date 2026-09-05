@@ -1473,7 +1473,7 @@ class WorkGuideApp {
           </div>
 
           <!-- ================= PAGE 2 ================= -->
-          <div class="sop-page-block" style="margin-top: 24px; border-top: 2px dashed #94A3B8; padding-top: 20px;">
+          <div class="sop-page-block sop-page-2">
             <div class="sop-flow-banner">--- 作  业  标  准  流  程 ---</div>
 
             <table class="sop-table-bordered sop-flow-tbl" style="margin-top: -1px;">

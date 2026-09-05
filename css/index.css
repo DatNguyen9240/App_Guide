@@ -2253,6 +2253,12 @@ html, body {
   gap: 12px;
 }
 
+.sop-page-2 {
+  margin-top: 24px;
+  border-top: 2px dashed #94A3B8;
+  padding-top: 20px;
+}
+
 /* SOP Header Table */
 .sop-table-bordered {
   width: 100%;
@@ -2502,11 +2508,13 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Print CSS */
+/* ==========================================================================
+   Print CSS (Dedicated Standard A4 Multi-Page Output for SOP Document)
+   ========================================================================== */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm;
+    margin: 8mm 10mm;
   }
 
   *,
@@ -2515,55 +2523,258 @@ html, body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
+    box-sizing: border-box !important;
   }
 
+  html,
   body {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
     background: #FFFFFF !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
+  #app-root {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    position: static !important;
+  }
+
+  .device-wrapper {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+  }
+
+  .device-notch,
   .desktop-controls,
   .app-header,
   .sop-doc-toolbar,
   .step-action-bar,
-  .app-bottom-nav {
+  .app-bottom-nav,
+  .bottom-nav,
+  .lang-switcher,
+  .image-modal-root {
     display: none !important;
   }
 
-  .device-wrapper {
-    box-shadow: none !important;
-    border: none !important;
+  .app-container {
+    display: block !important;
     width: 100% !important;
-    max-width: 100% !important;
     height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: transparent !important;
     margin: 0 !important;
     padding: 0 !important;
   }
 
-  .app-container {
-    height: auto !important;
-    overflow: visible !important;
-    background: transparent !important;
-  }
-
   .view-content {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
     overflow: visible !important;
     padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .sop-doc-container {
+    display: block !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .sop-sheet {
-    border: 1.5px solid #000 !important;
+    border: none !important;
     box-shadow: none !important;
-    margin: 0 0 15mm 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
+    width: 100% !important;
+    background: #FFFFFF !important;
   }
 
+  /* Page Break Separation */
   .sop-page-block {
+    display: block !important;
+    width: 100% !important;
     page-break-after: always !important;
     break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
   }
 
+  .sop-page-block:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  .sop-page-2 {
+    margin-top: 0 !important;
+    border-top: none !important;
+    padding-top: 0 !important;
+  }
+
+  /* Tables formatting for print */
+  .sop-table-bordered {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 1.5px solid #000000 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .sop-table-bordered td,
+  .sop-table-bordered th {
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    padding: 3px 5px !important;
+    font-size: 9pt !important;
+    line-height: 1.25 !important;
+  }
+
+  .sop-table-header-company .vi {
+    font-size: 9.5pt !important;
+    font-weight: 800 !important;
+  }
+
+  .sop-table-header-company .zh {
+    font-size: 11pt !important;
+    font-weight: 900 !important;
+  }
+
+  .sop-title-banner {
+    font-size: 12pt !important;
+    font-weight: 900 !important;
+    padding: 5px !important;
+  }
+
+  .sop-title-banner .sub-vi {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+  }
+
+  .sop-prep-title {
+    font-size: 10pt !important;
+    font-weight: 900 !important;
+    width: 34px !important;
+    padding: 3px 2px !important;
+  }
+
+  .sop-prep-th {
+    font-size: 9pt !important;
+    padding: 3px 5px !important;
+  }
+
+  .sop-prep-td {
+    padding: 3px !important;
+    height: 52px !important;
+    text-align: center !important;
+  }
+
+  .sop-prep-img {
+    max-height: 48px !important;
+    object-fit: contain !important;
+  }
+
+  .sop-flow-banner {
+    font-size: 10pt !important;
+    font-weight: 900 !important;
+    padding: 3px 0 !important;
+    letter-spacing: 2px !important;
+    margin: 3px 0 !important;
+    text-align: center !important;
+  }
+
+  .sop-flow-tbl th {
+    background: #F1F5F9 !important;
+    font-size: 8.5pt !important;
+    font-weight: 800 !important;
+    padding: 3px !important;
+    text-align: center !important;
+  }
+
+  .sop-step-num {
+    font-size: 11pt !important;
+    font-weight: 900 !important;
+    text-align: center !important;
+  }
+
+  .sop-action-name {
+    font-size: 9.5pt !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+  }
+
+  .sop-action-desc p {
+    margin: 0 0 2px 0 !important;
+    font-size: 8.5pt !important;
+  }
+
+  .sop-cell-img-box {
+    padding: 2px !important;
+  }
+
+  .sop-cell-img-box img {
+    max-height: 58px !important;
+    max-width: 95% !important;
+    object-fit: contain !important;
+    border: 1px solid #94A3B8 !important;
+    border-radius: 2px !important;
+  }
+
+  .sop-inline-img-link img {
+    height: 16px !important;
+    vertical-align: middle !important;
+    margin: 0 2px !important;
+  }
+
+  .sop-warning-inline {
+    padding: 2px 4px !important;
+    margin-top: 2px !important;
+    font-size: 8pt !important;
+    border-left: 2px solid #DC2626 !important;
+  }
+
+  .sop-page-footer {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    padding: 3px 0 !important;
+    margin-top: 3px !important;
+    text-align: right !important;
+    border-top: 1px dashed #000000 !important;
+  }
+
+  /* Force color and remove any filter */
+  img,
   .sop-doc-img,
   .sop-cell-img-box img,
   .sop-inline-img-link img,
@@ -2573,4 +2784,5 @@ html, body {
     filter: none !important;
   }
 }
+
 
