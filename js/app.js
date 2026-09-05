@@ -7,7 +7,7 @@ class WorkGuideApp {
     // Application State
     this.currentLang = localStorage.getItem('workguide_lang') || 'vi';
     this.currentView = 'home'; // 'home' | 'all-guides' | 'detail' | 'step-guide' | 'completion'
-    this.activeGuideId = 'sop-erp-tablet';
+    this.activeGuideId = guidesData[0]?.id || 'sop-erp-tablet-master';
     this.currentStepIndex = 0;
     this.searchQuery = '';
     this.activeCategory = 'all';
@@ -528,10 +528,10 @@ class WorkGuideApp {
   renderHomeView() {
     const allCategoriesList = [
       { id: 'all', labelKey: 'allCategories', icon: 'grid' },
-      { id: 'catERP', labelKey: 'catERP', icon: 'tablet' },
-      { id: 'catQC', labelKey: 'catQC', icon: 'check-circle' },
-      { id: 'catWarehouse', labelKey: 'catWarehouse', icon: 'package' },
-      { id: 'catMaintenance', labelKey: 'catMaintenance', icon: 'tool' }
+      { id: 'catMaster', labelKey: 'catMaster', icon: 'tablet' },
+      { id: 'catReceive', labelKey: 'catReceive', icon: 'inbox' },
+      { id: 'catSubmit', labelKey: 'catSubmit', icon: 'check-circle' },
+      { id: 'catHardware', labelKey: 'catHardware', icon: 'tool' }
     ];
     const existingCats = new Set(guidesData.map(g => g.category));
     const categories = allCategoriesList.filter(c => c.id === 'all' || existingCats.has(c.id));
@@ -692,10 +692,10 @@ class WorkGuideApp {
   renderAllGuidesView() {
     const categories = [
       { id: 'all', labelKey: 'allCategories', icon: 'grid' },
-      { id: 'catERP', labelKey: 'catERP', icon: 'tablet' },
-      { id: 'catQC', labelKey: 'catQC', icon: 'check-circle' },
-      { id: 'catWarehouse', labelKey: 'catWarehouse', icon: 'package' },
-      { id: 'catMaintenance', labelKey: 'catMaintenance', icon: 'tool' }
+      { id: 'catMaster', labelKey: 'catMaster', icon: 'tablet' },
+      { id: 'catReceive', labelKey: 'catReceive', icon: 'inbox' },
+      { id: 'catSubmit', labelKey: 'catSubmit', icon: 'check-circle' },
+      { id: 'catHardware', labelKey: 'catHardware', icon: 'tool' }
     ];
 
     const filteredGuides = guidesData.filter(g => {
