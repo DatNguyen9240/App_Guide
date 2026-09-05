@@ -528,10 +528,7 @@ class WorkGuideApp {
   renderHomeView() {
     const allCategoriesList = [
       { id: 'all', labelKey: 'allCategories', icon: 'grid' },
-      { id: 'catMaster', labelKey: 'catMaster', icon: 'tablet' },
-      { id: 'catReceive', labelKey: 'catReceive', icon: 'inbox' },
-      { id: 'catSubmit', labelKey: 'catSubmit', icon: 'check-circle' },
-      { id: 'catHardware', labelKey: 'catHardware', icon: 'tool' }
+      { id: 'catERP', labelKey: 'catERP', icon: 'tablet' }
     ];
     const existingCats = new Set(guidesData.map(g => g.category));
     const categories = allCategoriesList.filter(c => c.id === 'all' || existingCats.has(c.id));
@@ -692,10 +689,7 @@ class WorkGuideApp {
   renderAllGuidesView() {
     const categories = [
       { id: 'all', labelKey: 'allCategories', icon: 'grid' },
-      { id: 'catMaster', labelKey: 'catMaster', icon: 'tablet' },
-      { id: 'catReceive', labelKey: 'catReceive', icon: 'inbox' },
-      { id: 'catSubmit', labelKey: 'catSubmit', icon: 'check-circle' },
-      { id: 'catHardware', labelKey: 'catHardware', icon: 'tool' }
+      { id: 'catERP', labelKey: 'catERP', icon: 'tablet' }
     ];
 
     const filteredGuides = guidesData.filter(g => {
