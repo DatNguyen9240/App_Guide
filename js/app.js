@@ -1311,7 +1311,7 @@ class WorkGuideApp {
         <!-- SOP Document Sheet (Standard 2-Page Format of Chen Kai SOP) -->
         <div class="sop-sheet">
           <!-- ================= PAGE 1 ================= -->
-          <div class="sop-page-block">
+          <div class="sop-page-block sop-page-1">
             <!-- Header Table -->
             <table class="sop-table-bordered">
               <tr>
